@@ -589,7 +589,7 @@ public class Utils implements Constants {
 		}
 	}
 
-	public static String getLogRequestParameters(Map<String, Object> parameterMap)
+	public static String getLogRequestParameters(Map<String, String[]> parameterMap)
 	{
 		ArrayList<String> keys = new ArrayList<String>(parameterMap.keySet());
 		String log = "request parameters, size = " + keys.size();
