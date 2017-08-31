@@ -51,7 +51,7 @@ public class YWorkItemRepository {
 
 
     protected YWorkItem add(YWorkItem workItem) {
-        _logger.debug("--> YWorkItemRepository#add: {}", workItem.getIDString());
+        _logger.warn("--> YWorkItemRepository#add: {}", workItem.getIDString());
         return _itemMap.put(workItem.getIDString(), workItem);
     }
 
@@ -62,20 +62,28 @@ public class YWorkItemRepository {
 
 
     public YWorkItem get(String itemID) {
-        return _itemMap.get(itemID);
+        _logger.warn("--> YWorkItemRepository#get: {}", itemID);
+        YWorkItem y = _itemMap.get(itemID);
+        if (y == null) {
+            mydump(_logger);
+        }
+        return y;
     }
 
 
     public YWorkItem remove(YWorkItem workItem) {
-        _logger.debug("--> YWorkItemRepository#remove: {}", workItem.getIDString());
+        _logger.warn("--> YWorkItemRepository#remove: {}", workItem.getIDString());
         return _itemMap.remove(workItem.getIDString());
     }
 
-    public void clear() { _itemMap.clear(); }
+    public void clear() {
+        _logger.warn("--> YWorkItemRepository#clear");
+        _itemMap.clear();
+    }
 
 
     public Set<YWorkItem> removeWorkItemFamily(YWorkItem workItem) {
-        _logger.debug("--> removeWorkItemFamily: {}", workItem.getIDString());
+        _logger.warn("--> removeWorkItemFamily: {}", workItem.toXML());
         Set<YWorkItem> removedSet = new HashSet<YWorkItem>();
         YWorkItem parent = workItem.getParent() != null ? workItem.getParent() : workItem;
         Set<YWorkItem> children = parent.getChildren();
@@ -96,6 +104,7 @@ public class YWorkItemRepository {
      * @param caseIDForNet
      */
     public Set<YWorkItem> cancelNet(YIdentifier caseIDForNet) {
+        _logger.warn("--> YWorkItemRepository#cancelNet: {}", caseIDForNet);
         Set<String> itemsToRemove = new HashSet<String>();
         for (YWorkItem item : _itemMap.values()) {
             YIdentifier identifier = item.getWorkItemID().getCaseID();
@@ -110,6 +119,7 @@ public class YWorkItemRepository {
 
 
     private Set<YWorkItem> removeItems(Set<String> itemsToRemove) {
+        _logger.warn("--> YWorkItemRepository#removeItems: {}", itemsToRemove);
         Set<YWorkItem> removedSet = new HashSet<YWorkItem>();
         for (String workItemID : itemsToRemove) {
             YWorkItem item = _itemMap.remove(workItemID);
@@ -156,6 +166,7 @@ public class YWorkItemRepository {
 
 
     public Set<YWorkItem> getWorkItems(YWorkItemStatus status) {
+        _logger.warn("--> YWorkItemRepository#getWorkItems: {}", status);
         Set<YWorkItem> itemSet = new HashSet<YWorkItem>();
         for (YWorkItem workitem : _itemMap.values()) {
             if (workitem.getStatus() == status) {
@@ -167,6 +178,7 @@ public class YWorkItemRepository {
 
 
     public Set<YWorkItem> getWorkItems() {
+        _logger.warn("--> YWorkItemRepository#getWorkItems");
         cleanseRepository();
         return new HashSet<YWorkItem>(_itemMap.values());
     }
@@ -186,9 +198,12 @@ public class YWorkItemRepository {
                         break;
                     }
                 }
-
+                
                 //clean up all the work items that are out of synch with the engine.
-                if (! foundOne) itemsToRemove.add(workitem.getIDString());
+                if (! foundOne) {
+                    _logger.warn("--> YWorkItemRepository#cleanseRepository: will remove {}", workitem.getIDString());
+                    itemsToRemove.add(workitem.getIDString());
+                }
             }
         }
         removeItems(itemsToRemove);
@@ -196,7 +211,12 @@ public class YWorkItemRepository {
 
 
     public Set<YWorkItem> getChildrenOf(String workItemID) {
+        _logger.warn("--> YWorkItemRepository#getChildrenOf: {}", workItemID);
         YWorkItem item = _itemMap.get(workItemID);
+        if (item != null) {
+            _logger.warn("--> YWorkItemRepository#getChildrenOf: children = {}", item.getChildren());
+        }
+        
         return (item != null) ? item.getChildren() : new HashSet<YWorkItem>();
     }
 
@@ -295,4 +315,19 @@ public class YWorkItemRepository {
         logger.debug("*** DUMP OF CASE_2_NETRUNNER_MAP ENDS");
     }
 
+    
+    private void mydump(Logger logger) {
+        logger.warn("\n*** DUMPING " + _itemMap.size() +
+                     " ENTRIES IN ID_2_WORKITEMS_MAP ***");
+        int sub = 1;
+        for (String key : _itemMap.keySet()) {
+            YWorkItem workitem = _itemMap.get(key);
+            if (workitem != null) {
+                logger.warn("Entry " + sub++ + " Key=" + key);
+                logger.warn(("    WorkitemID        " + workitem.getIDString()));
+            }    
+        }
+        logger.warn("*** DUMP OF CASE_2_NETRUNNER_MAP ENDS");
+    }
+    
 }
