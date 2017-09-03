@@ -1502,7 +1502,7 @@ public abstract class YTask extends YExternalNetElement {
 
     public String getInformation() {
         try {
-            YDecomposition decomp = getDecompositionPrototype();
+            YAWLServiceGateway gateway = (YAWLServiceGateway) getDecompositionPrototype();
             StringBuilder result = new StringBuilder();
             result.append("<taskInfo>");
 
@@ -1518,7 +1518,7 @@ public abstract class YTask extends YExternalNetElement {
             result.append("</taskID>");
 
             result.append("<taskName>");
-            result.append(_name != null ? _name : decomp.getID());
+            result.append(_name != null ? _name : _decompositionPrototype.getID());
             result.append("</taskName>");
 
             if (_documentation != null) {
@@ -1526,26 +1526,24 @@ public abstract class YTask extends YExternalNetElement {
                 result.append(_documentation);
                 result.append("</taskDocumentation>");
             }
-            if (decomp != null) {
+            if (_decompositionPrototype != null) {
                 result.append("<decompositionID>");
-                result.append(decomp.getID());
+                result.append(_decompositionPrototype.getID());
                 result.append("</decompositionID>");
 
                 result.append("<attributes>");
-                result.append(decomp.getAttributes().toXMLElements());
+                result.append(_decompositionPrototype.getAttributes().toXMLElements());
                 result.append("</attributes>");
 
-                if (decomp instanceof YAWLServiceGateway) {
-                    YAWLServiceGateway wsgw = (YAWLServiceGateway) _decompositionPrototype;
-                    YAWLServiceReference ys = wsgw.getYawlService();
-                    if (ys != null) {
-                        result.append("<yawlService>");
-                        String ysID = ys.getURI();
-                        result.append("<id>");
-                        result.append(ysID);
-                        result.append("</id>");
-                        result.append("</yawlService>");
-                    }
+                YAWLServiceGateway wsgw = (YAWLServiceGateway) _decompositionPrototype;
+                YAWLServiceReference ys = wsgw.getYawlService();
+                if (ys != null) {
+                    result.append("<yawlService>");
+                    String ysID = ys.getURI();
+                    result.append("<id>");
+                    result.append(ysID);
+                    result.append("</id>");
+                    result.append("</yawlService>");
                 }
             }
 
@@ -1555,15 +1553,11 @@ public abstract class YTask extends YExternalNetElement {
                         append(getMultiInstanceAttributes().getMIFormalInputParam()).
                         append("</formalInputParam>");
             }
-
-            if (decomp instanceof YAWLServiceGateway) {
-                YAWLServiceGateway gateway = (YAWLServiceGateway)decomp;
-                for (YParameter parameter : gateway.getInputParameters().values()) {
-                    result.append(parameter.toSummaryXML());
-                }
-                for (YParameter parameter : gateway.getOutputParameters().values()) {
-                    result.append(parameter.toSummaryXML());
-                }
+            for (YParameter parameter : gateway.getInputParameters().values()) {
+                result.append(parameter.toSummaryXML());
+            }
+            for (YParameter parameter : gateway.getOutputParameters().values()) {
+                result.append(parameter.toSummaryXML());
             }
             result.append("</params>");
 
