@@ -167,7 +167,7 @@ public class YWorkItemRepository {
 
 
     public Set<YWorkItem> getWorkItems() {
-        //cleanseRepository();
+        cleanseRepository();
         return new HashSet<YWorkItem>(_itemMap.values());
     }
 
