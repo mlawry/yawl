@@ -86,6 +86,11 @@
         <artifactId>commons-io</artifactId>
         <version>2.4</version>
     </dependency>
+    <dependency>
+        <groupId>org.hawkular.datamining</groupId>
+        <artifactId>hawkular-datamining-forecast</artifactId>
+        <version>0.2.0.Final</version>
+    </dependency>
     
     <!-- hibernate -->
     <dependency>
