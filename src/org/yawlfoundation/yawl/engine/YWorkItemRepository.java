@@ -177,7 +177,7 @@ public class YWorkItemRepository {
         Set<String> itemsToRemove = new HashSet<String>();
         for (YWorkItem workitem : _itemMap.values()) {
             YNetRunner runner = YEngine.getInstance().getNetRunnerRepository().get(workitem);
-
+        
             if (runner != null) {                                      //MLF can be null
                 boolean foundOne = false;
                 for (YTask task : runner.getActiveTasks()) {
@@ -186,9 +186,29 @@ public class YWorkItemRepository {
                         break;
                     }
                 }
-
+        
                 //clean up all the work items that are out of synch with the engine.
-                if (! foundOne) itemsToRemove.add(workitem.getIDString());
+                if (! foundOne) {
+                    _logger.warn("--> YWorkItemRepository#cleanseRepository: looking to remove {}", workitem.getIDString());
+                    
+                    Set<YTask> activeTaskSet = runner.getActiveTasks();
+                    for (YTask task : activeTaskSet) {
+                        _logger.warn("--> YWorkItemRepository#cleanseRepository: active task: {}", task.getID());
+                    }
+                    
+                    if (activeTaskSet.isEmpty()) {
+                        _logger.warn("--> YWorkItemRepository#cleanseRepository: there are no active tasks.");
+                        YNet net = runner.getNet();
+                        if (net != null) {
+                            _logger.warn("--> YWorkItemRepository#cleanseRepository: the NET is Name {} ID {}.", net.getName(), net.getID());
+                        }
+                    } else {
+                        // Only clean up items if activeTaskSet is not empty.
+                        _logger.warn("--> YWorkItemRepository#cleanseRepository will remove {}", workitem.getIDString());
+            
+                        itemsToRemove.add(workitem.getIDString());
+                    }
+                }
             }
         }
         if (! itemsToRemove.isEmpty()) removeItems(itemsToRemove);
