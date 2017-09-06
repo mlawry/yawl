@@ -22,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.yawlfoundation.yawl.elements.YAWLServiceGateway;
 import org.yawlfoundation.yawl.elements.YAWLServiceReference;
+import org.yawlfoundation.yawl.elements.YNet;
 import org.yawlfoundation.yawl.elements.YTask;
 import org.yawlfoundation.yawl.elements.state.YIdentifier;
 
