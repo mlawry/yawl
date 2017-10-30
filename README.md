@@ -35,3 +35,34 @@ YAWL offers these distinctive features:
 * sophisticated verification support
 * Web service communication
 * Highly configurable and extensible
+
+## About This Fork
+
+This fork aims to provide a Maven-based build script that will create the JAR files
+in the **yawllib** folder of a YAWL installation. Note the resulting JAR files *should*
+be equivalent to the official builds but the code may actually be different.
+
+* Install YAWL 4.1 using the official installers mentioned in http://www.yawlfoundation.org/
+
+* The official JAR files are found in the folder **installdir/engine/apache-tomcat-7.0.65/yawllib**
+
+* Follow the steps below to build the equivalent JAR files using this fork. Requires a Linux
+  system with git, bash shell and maven installed. Also requires access to maven central repository.
+
+* Git clone this fork into a new folder named **yawl**
+
+* `cd yawl/build/jar`
+
+* `bash build-yawl-lib.sh`
+
+* When the script ends, `rm *.jar` from the **yawllib** folder of your YAWL installation.
+
+* Copy **yawl/build/jar/yawl-lib/target/yawl-lib-4.1.jar** to **yawllib**
+
+* Copy **yawl/build/jar/yawl-lib/target/lib/*.jar** to **yawllib**
+
+* Your new **yawllib** is now ready. Start tomcat and test it out.
+
+NOTE: Only the yawl service (the engine) and the resourceService are known to work, and
+there may still be certain class files missing. Please create an issue in GitHub if you find problems.
+
