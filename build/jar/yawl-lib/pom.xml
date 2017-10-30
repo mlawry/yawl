@@ -110,24 +110,24 @@
     </dependency>
     <!-- jsf -->
     <dependency>
-        <groupId>javax.faces</groupId>
+        <groupId>org.yawlfoundation.yawl.build</groupId>
         <artifactId>jsf-api</artifactId>
-        <version>1.2-20</version>
+        <version>1.0</version>
     </dependency>
     <dependency>
-        <groupId>javax.faces</groupId>
+        <groupId>org.yawlfoundation.yawl.build</groupId>
         <artifactId>jsf-impl</artifactId>
-        <version>1.2-20</version>
-    </dependency>
-    <dependency>
-        <groupId>org.yawlfoundation.yawl.build</groupId>
-        <artifactId>jsf-appbase</artifactId>
         <version>1.0</version>
     </dependency>
     <dependency>
-        <groupId>org.yawlfoundation.yawl.build</groupId>
-        <artifactId>jsf-webui</artifactId>
-        <version>1.0</version>
+        <groupId>org.netbeans.external</groupId>
+        <artifactId>appbase</artifactId>
+        <version>RELEASE65</version>
+    </dependency>
+    <dependency>
+        <groupId>org.netbeans.external</groupId>
+        <artifactId>webui</artifactId>
+        <version>RELEASE65</version>
     </dependency>
     <!-- jung -->
     <dependency>
@@ -195,17 +195,47 @@
     </dependency>
     <!-- Runtime only dependencies -->
     <dependency>
-		<groupId>commons-fileupload</groupId>
-		<artifactId>commons-fileupload</artifactId>
-		<version>1.2.2</version><!-- At least required by monitorService+resourceService -->
-		<scope>runtime</scope>
-	</dependency>
+	<groupId>commons-digester</groupId>
+	<artifactId>commons-digester</artifactId>
+	<version>1.5</version>
+	<scope>runtime</scope>
+    </dependency>
     <dependency>
-		<groupId>xerces</groupId>
-		<artifactId>xercesImpl</artifactId>
-		<version>2.11.0</version>
-		<scope>runtime</scope>
-	</dependency>
+	<groupId>commons-fileupload</groupId>
+	<artifactId>commons-fileupload</artifactId>
+	<version>1.2.2</version><!-- At least required by monitorService+resourceService -->
+	<scope>runtime</scope>
+    </dependency>
+    <dependency>
+	<groupId>javax.servlet</groupId>
+	<artifactId>jstl</artifactId>
+	<version>1.2</version><!-- At least required by resourceService JSF -->
+	<scope>runtime</scope>
+    </dependency>
+    <dependency>
+	<groupId>org.glassfish.main.admingui</groupId>
+	<artifactId>dataprovider</artifactId>
+	<version>4.1.2</version><!-- At least required by resourceService JSF -->
+	<scope>runtime</scope>
+    </dependency>
+    <dependency>
+	<groupId>org.netbeans.external</groupId>
+	<artifactId>errorhandler</artifactId>
+	<version>RELEASE65</version><!-- At least required by resourceService JSF -->
+	<scope>runtime</scope>
+    </dependency>
+    <dependency>
+	<groupId>org.yawlfoundation.yawl.build</groupId>
+	<artifactId>jsf-webui-theme</artifactId>
+	<version>1.0</version><!-- At least required by resourceService JSF -->
+	<scope>runtime</scope>
+    </dependency>
+    <dependency>
+	<groupId>xerces</groupId>
+	<artifactId>xercesImpl</artifactId>
+	<version>2.11.0</version>
+	<scope>runtime</scope>
+    </dependency>
     <!-- Provided only dependencies -->
     <dependency>
         <groupId>javax.servlet</groupId>

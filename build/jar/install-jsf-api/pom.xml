@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.yawlfoundation.yawl.build</groupId>
-  <artifactId>jsf-appbase</artifactId>
+  <artifactId>jsf-api</artifactId>
   <version>1.0</version>
-  <url>http://bits.netbeans.org/nexus/service/local/repositories/release65/content/org/netbeans/external/appbase/RELEASE65/appbase-RELEASE65.jar</url>
+
   <build>
       <plugins>
          <plugin>
@@ -21,10 +21,10 @@
                      <goal>install-file</goal>
                   </goals>
                   <configuration>
-                     <file>${project.basedir}/appbase-RELEASE65.jar</file>
-                     <groupId>org.netbeans.external</groupId>
-                     <artifactId>appbase</artifactId>
-                     <version>RELEASE65</version>
+                     <file>${project.basedir}/jsf-api.jar</file>
+                     <groupId>org.yawlfoundation.yawl.build</groupId>
+                     <artifactId>jsf-api</artifactId>
+                     <version>1.0</version>
                      <packaging>jar</packaging>
                      <createChecksum>true</createChecksum>
                      <generatePom>true</generatePom>

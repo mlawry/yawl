@@ -5,7 +5,7 @@
   <groupId>org.yawlfoundation.yawl.build</groupId>
   <artifactId>jsf-webui</artifactId>
   <version>1.0</version>
-
+  <url>http://bits.netbeans.org/nexus/service/local/repositories/release65/content/org/netbeans/external/webui-jsf/RELEASE65/webui-jsf-RELEASE65.jar</url>
   <build>
       <plugins>
          <plugin>
@@ -21,10 +21,10 @@
                      <goal>install-file</goal>
                   </goals>
                   <configuration>
-                     <file>${project.basedir}/webui.jar</file>
-                     <groupId>org.yawlfoundation.yawl.build</groupId>
-                     <artifactId>jsf-webui</artifactId>
-                     <version>1.0</version>
+                     <file>${project.basedir}/webui-RELEASE65.jar</file>
+                     <groupId>org.netbeans.external</groupId>
+                     <artifactId>webui</artifactId>
+                     <version>RELEASE65</version>
                      <packaging>jar</packaging>
                      <createChecksum>true</createChecksum>
                      <generatePom>true</generatePom>
