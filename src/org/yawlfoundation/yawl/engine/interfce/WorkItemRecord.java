@@ -19,6 +19,7 @@
 package org.yawlfoundation.yawl.engine.interfce;
 
 import org.jdom2.Element;
+import org.yawlfoundation.yawl.elements.YAttributeMap;
 import org.yawlfoundation.yawl.util.JDOMUtil;
 import org.yawlfoundation.yawl.util.StringUtil;
 
@@ -74,7 +75,7 @@ public class WorkItemRecord implements Cloneable {
     private String _codelet;
 
     // task/decomp level attribs
-    private Map<String, String> _attributeTable;
+    private YAttributeMap _attributeTable;
     private String _extendedAttributes = "";
 
     // identifies this item as a member of a group of deferred choice items
@@ -185,7 +186,7 @@ public class WorkItemRecord implements Cloneable {
     public void setDeferredChoiceGroupID(String id) { _deferredChoiceGroupID = id ; }
 
     public void setExtendedAttributes(Map<String, String> attribs) {
-        _attributeTable = attribs ;
+        _attributeTable = new YAttributeMap(attribs);
         _extendedAttributes = attributeTableToAttributeString() ;
     }
 
@@ -510,28 +511,20 @@ public class WorkItemRecord implements Cloneable {
     private String attributeTableToAttributeString() {
         if ((_attributeTable == null) || _attributeTable.isEmpty()) return "" ;
         
-        StringBuilder xml = new StringBuilder();
-        for (String key : _attributeTable.keySet()) {
-            xml.append(" ")
-               .append(key)
-               .append("=\"")
-               .append(_attributeTable.get(key))
-               .append("\"");
-        }
-        return xml.toString();
+        return _attributeTable.toXML();
     }
 
 
-    private Hashtable<String, String> attributeStringToTable() {
+    private YAttributeMap attributeStringToTable() {
         if ((_extendedAttributes == null) || (_extendedAttributes.length() == 0))
             return null;
 
-        Hashtable<String, String> table = new Hashtable<String, String>();
+        YAttributeMap table = new YAttributeMap();
 
         // split into key, value, key, value, ...
         String[] attributes = _extendedAttributes.split("\\s*=\\s*\"|\\s*\"\\s*");
         for (int i=0; i < attributes.length - 1; i=i+2) {
-            table.put(attributes[i].trim(), attributes[i+1].trim());
+            table.put(attributes[i].trim(), JDOMUtil.decodeAttributeEscapes(attributes[i+1].trim()));
         }
         return table;
     }

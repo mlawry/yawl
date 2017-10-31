@@ -18,6 +18,7 @@
 
 package org.yawlfoundation.yawl.util;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
@@ -196,6 +197,16 @@ public class JDOMUtil {
                 .replaceAll("&quot;","\"")
                 .replaceAll("&apos;", "'")
                 .replaceAll("&amp;", "&");
+    }
+    
+    
+    public static String decodeAttributeEscapes(String s) {
+        // Looking at the source code of commons-text 1.1, this method is an aggregation of
+        // the following 3 translators:
+        // EntityArrays.BASIC_UNESCAPE, EntityArrays.APOS_UNESCAPE, NumericEntityUnescaper
+        // The difference between this method and decocdeEscapes above is the
+        // NumericEntityUnescaper, which will decode entities such as &#xA; (newline).
+        return StringEscapeUtils.unescapeXml(s);
     }
 
     /****************************************************************************/
