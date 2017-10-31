@@ -168,7 +168,7 @@
     <!--
     Xerces may require the class org.w3c.dom.ElementTraversal, which is not included in
     earlier versions of xml-apis, so must upgrade to 1.4.01.
-    https://stackoverflow.com/questions/10234201/appengine-error-java-lang-noclassdeffounderror-org-w3c-dom-elementtraversal -->
+    https://stackoverflow.com/questions/10234201/appengine-error-java-lang-noclassdeffounderror-org-w3c-dom-elementtraversal
     -->
     <dependency>
         <groupId>xml-apis</groupId>
