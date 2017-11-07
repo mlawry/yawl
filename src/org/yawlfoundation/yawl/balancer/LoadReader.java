@@ -1,8 +1,10 @@
 package org.yawlfoundation.yawl.balancer;
 
 import org.json.JSONException;
+import org.yawlfoundation.yawl.balancer.config.Config;
 import org.yawlfoundation.yawl.balancer.jmx.JMXReader;
 import org.yawlfoundation.yawl.balancer.jmx.JMXStatistics;
+import org.yawlfoundation.yawl.balancer.output.ArffOutputter;
 import org.yawlfoundation.yawl.balancer.output.BusynessOutputter;
 
 import java.io.IOException;
@@ -16,12 +18,10 @@ import java.util.Map;
 public class LoadReader {
 
     private final JMXReader _jmxReader;
-    private double _requestLimit = 500;
-    private double _procTimeLimit = 70;
-    private double _threadsLimit = 16;
     private int _prevReqCount = 0;
     private double _prevProcTime = 0;
     private BusynessOutputter _outputter;
+    private ArffOutputter _arffWriter;
     private final String _engineName;
 
 
@@ -36,14 +36,6 @@ public class LoadReader {
     }
 
 
-    public void setLimits(int requestsPerSec, int meanProcessingTimeInMsecs,
-                          int busyThreads) {
-        _requestLimit = requestsPerSec;
-        _procTimeLimit = meanProcessingTimeInMsecs;
-        _threadsLimit = busyThreads;
-    }
-
-
     public double getBusyNess() throws IOException, JSONException {
         return getBusyness(false);
     }
@@ -51,6 +43,12 @@ public class LoadReader {
 
     public void close() {
         if (_outputter != null) _outputter.closeFile();
+        if (_arffWriter != null) _arffWriter.closeFile();
+    }
+
+
+    public void setArffWriter(ArffOutputter writer) {
+        _arffWriter = writer;
     }
 
     public double getBusyness(boolean verbose) throws IOException, JSONException {
@@ -59,18 +57,21 @@ public class LoadReader {
         int procTime = requestStats.getIntValue("processingTime");
         double timeFactor = 0;
         double reqFactor = 0;
+        int netReqCount = 0;
+        double meanTime = 0;
+
         if (_prevReqCount > 0) {
-            int netReqCount = reqCount - _prevReqCount;
-            double meanTime = (procTime - _prevProcTime) / (double) (netReqCount);
-            timeFactor = meanTime / _procTimeLimit;
-            reqFactor = netReqCount / _requestLimit;
+            netReqCount = reqCount - _prevReqCount;
+            meanTime = (procTime - _prevProcTime) / (double) (netReqCount);
+            timeFactor = (meanTime / Config.getWeightedProcessTimeLimit());
+            reqFactor = netReqCount / Config.getWeightedRequestLimitPerPollInterval();
         }
         _prevReqCount = reqCount;
         _prevProcTime = procTime;
 
         JMXStatistics threadStats = getThreads();
         int busy = threadStats.getIntValue("currentThreadsBusy");
-        double threadFactor = busy / _threadsLimit;
+        double threadFactor = busy / Config.getWeightedThreadsLimit();
 
         double score = ((timeFactor + reqFactor + threadFactor) / 3) * 100;
 
@@ -94,19 +95,11 @@ public class LoadReader {
             verboseValues.put("busyness", String.format("%.3f", score));
             getOutputter().add(verboseValues);
 
-//            StringBuilder sb = new StringBuilder();
-//            sb.append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").
-//                    format(new Date()));
-//            sb.append(" :- Load statistics for engine ").append(_host).append(":")
-//                    .append(_port).append('\n');
-//            sb.append(String.format("CPU %% (process/system): %.3f / %.3f\n",
-//                    procLoad, sysLoad));
-//            sb.append(String.format("Threads (count/busy/free): %d / %d / %d\n",
-//                    count, busy, (max - busy)));
-//            sb.append(String.format("Factors (proctime/reqs/threads): %.3f / %.3f / %.3f\n",
-//                    timeFactor, reqFactor, threadFactor));
-//            sb.append(String.format("Overall Busyness Factor: %.1f%%\n\n", score));
-//            System.out.println(sb.toString());
+            if (_arffWriter != null) {
+                verboseValues.put("process_time", String.format("%.3f", meanTime));
+                verboseValues.put("requests_count", String.format("%d", netReqCount));
+                _arffWriter.add(verboseValues);
+            }
         }
 
         return score;
