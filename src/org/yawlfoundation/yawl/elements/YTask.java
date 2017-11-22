@@ -1515,15 +1515,11 @@ public abstract class YTask extends YExternalNetElement {
         result.append(getID());
         result.append("</taskID>");
 
-        result.append("<taskName>");
-        result.append(_name != null ? _name :
-                _decompositionPrototype != null ? _decompositionPrototype.getID() : "null");
-        result.append("</taskName>");
+        result.append(StringUtil.wrapEscaped((_name != null ? _name :
+                _decompositionPrototype != null ? _decompositionPrototype.getID() : "null"), "taskName"));
 
         if (_documentation != null) {
-            result.append("<taskDocumentation>");
-            result.append(_documentation);
-            result.append("</taskDocumentation>");
+            result.append(StringUtil.wrapEscaped(_documentation, "taskDocumentation"));
         }
         if (_decompositionPrototype != null) {
             result.append("<decompositionID>");
@@ -1540,9 +1536,7 @@ public abstract class YTask extends YExternalNetElement {
                 if (ys != null) {
                     result.append("<yawlService>");
                     String ysID = ys.getURI();
-                    result.append("<id>");
-                    result.append(ysID);
-                    result.append("</id>");
+                    result.append(StringUtil.wrapEscaped(ysID, "id"));
                     result.append("</yawlService>");
                 }
             }
