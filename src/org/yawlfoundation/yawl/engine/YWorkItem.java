@@ -825,7 +825,14 @@ public class YWorkItem {
 
     public YTask getTask() { return _task; }
 
-    public void setTask(YTask task) { _task = task; }
+    public void setTask(YTask task) {
+        _task = task;
+        
+        if (task == null) {
+            System.err.println("NOTE: YWorkItem.setTask(null)!!");
+            Thread.dumpStack();
+        }
+    }
 
 
     public String getDocumentation() {
