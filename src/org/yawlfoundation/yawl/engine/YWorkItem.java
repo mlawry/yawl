@@ -846,13 +846,13 @@ public class YWorkItem {
         xml.append(StringUtil.wrap(getTaskID(), "taskid"));
         xml.append(StringUtil.wrap(getCaseID().toString(), "caseid"));
         xml.append(StringUtil.wrap(getUniqueID(), "uniqueid"));
-        xml.append(StringUtil.wrap(_task.getName(), "taskname"));
-        xml.append(StringUtil.wrap(getDocumentation(), "documentation"));
+        xml.append(StringUtil.wrapEscaped(_task.getName(), "taskname"));
+        xml.append(StringUtil.wrapEscaped(getDocumentation(), "documentation"));
         if (_specID.getIdentifier() != null)
             xml.append(StringUtil.wrap(_specID.getIdentifier(), "specidentifier"));
 
         xml.append(StringUtil.wrap(String.valueOf(_specID.getVersion()), "specversion"));
-        xml.append(StringUtil.wrap(_specID.getUri(), "specuri"));
+        xml.append(StringUtil.wrapEscaped(_specID.getUri(), "specuri"));
         xml.append(StringUtil.wrap(_status.toString(), "status"));
         xml.append(StringUtil.wrap(String.valueOf(_allowsDynamicCreation),
                                                               "allowsdynamiccreation"));
@@ -876,7 +876,7 @@ public class YWorkItem {
             xml.append(StringUtil.wrap(String.valueOf(getStartTime().getTime()),
                          "startTimeMs")) ;
             if (_externalClient != null) {
-                xml.append(StringUtil.wrap(_externalClient.getUserName(), "startedBy"));
+                xml.append(StringUtil.wrapEscaped(_externalClient.getUserName(), "startedBy"));
             }    
         }
         if (_timerParameters != null) {
