@@ -33,7 +33,7 @@ cd yawl-lib                      && \
     tar -zxvf additional.tgz --directory src/main/resources --strip-components=3 && \
     mkdir -p ./src/main/resources/org/yawlfoundation/yawl/unmarshal/             && \
     cp ../../../schema/* ./src/main/resources/org/yawlfoundation/yawl/unmarshal/ && \
-    mvn clean package
+    mvn clean install
 
 echo '..................................................................'
 echo 'The output JAR file is in `yawl/build/jar/yawl-lib/target` folder.'
