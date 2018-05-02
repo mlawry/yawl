@@ -420,10 +420,10 @@ public class WorkItemRecord implements Cloneable {
            .append(StringUtil.wrap(_caseID, "caseid"))
            .append(StringUtil.wrap(_taskID, "taskid"))
            .append(StringUtil.wrap(_uniqueID, "uniqueid"))
-           .append(StringUtil.wrap(_taskName, "taskname"));
+           .append(StringUtil.wrapEscaped(_taskName, "taskname"));
 
         if (_documentation != null) {
-            xml.append(StringUtil.wrap(_documentation, "documentation"));
+            xml.append(StringUtil.wrapEscaped(_documentation, "documentation"));
         }
 
         xml.append(StringUtil.wrap(_allowsDynamicCreation, "allowsdynamiccreation"))
