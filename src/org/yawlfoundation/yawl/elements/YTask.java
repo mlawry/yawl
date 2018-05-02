@@ -541,25 +541,27 @@ public abstract class YTask extends YExternalNetElement {
     private void addDefaultValuesAsRequired(Document dataDoc) {
         if (dataDoc == null) return;
         Element dataElem = dataDoc.getRootElement();
-        for (YParameter param : _decompositionPrototype.getOutputParameters().values()) {
+        List<YParameter> outputParams = new ArrayList<YParameter>(
+                _decompositionPrototype.getOutputParameters().values());
+        Collections.sort(outputParams);
+        for (int index = 0; index < outputParams.size(); index++) {
+            YParameter param = outputParams.get(index);
             String defaultValue = param.getDefaultValue();
             if (! StringUtil.isNullOrEmpty(defaultValue)) {
-                Element paramData = dataElem.getChild(param.getPreferredName());
+                Element paramElem = dataElem.getChild(param.getPreferredName());
 
-                // if there's an element, but no value, add the default
-                if (paramData != null) {
-                    if (StringUtil.isNullOrEmpty(paramData.getText())) {
-                        paramData.setText(defaultValue);
-                    }
-                }
-
-                // else if there's no element at all, add it with the default value
-                else {
+                // if there's no element, or it has with no content, add the default
+                if (paramElem == null || paramElem.getContent().isEmpty()) {
                     Element defElem = JDOMUtil.stringToElement(
-                            StringUtil.wrap(defaultValue, param.getPreferredName()));
+                            StringUtil.wrap(defaultValue,
+                                    param.getPreferredName())).detach();
                     defElem.setNamespace(dataElem.getNamespace());
-                    dataElem.addContent(Math.min(dataElem.getContentSize(), param.getOrdering()),
-                            defElem.detach());
+                    if (paramElem != null) {                     // insert content
+                        paramElem.addContent(defElem.removeContent());
+                    }
+                    else {                                       // insert whole element
+                        dataElem.addContent(index, defElem);
+                    }
                 }
             }
         }
@@ -1515,15 +1517,13 @@ public abstract class YTask extends YExternalNetElement {
         result.append(getID());
         result.append("</taskID>");
 
-        result.append("<taskName>");
-        result.append(_name != null ? _name :
-                _decompositionPrototype != null ? _decompositionPrototype.getID() : "null");
-        result.append("</taskName>");
+        String taskName = _name != null ? _name :
+                        _decompositionPrototype != null ?
+                                _decompositionPrototype.getID() : "null";
+        StringUtil.wrapEscaped(taskName, "taskName");
 
         if (_documentation != null) {
-            result.append("<taskDocumentation>");
-            result.append(_documentation);
-            result.append("</taskDocumentation>");
+            result.append(StringUtil.wrapEscaped(_documentation, "taskDocumentation"));
         }
         if (_decompositionPrototype != null) {
             result.append("<decompositionID>");

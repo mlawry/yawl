@@ -84,14 +84,13 @@ public class YWorkItemTimer implements YTimedObject {
     public void setPersisting(boolean persist) { _persisting = persist; }
     
 
-    public void persistThis(boolean insert) {
+    public void unpersistThis() {
         if (_persisting) {
             YPersistenceManager pmgr = YEngine.getPersistenceManager();
             if (pmgr != null) {
                 try {
                     boolean localTransaction = pmgr.startTransaction();
-                    if (insert) pmgr.storeObjectFromExternal(this);
-                    else pmgr.deleteObjectFromExternal(this);
+                    pmgr.deleteObjectFromExternal(this);
                     if (localTransaction) pmgr.commit();
                 }
                 catch (YPersistenceException ype) {
@@ -115,6 +114,7 @@ public class YWorkItemTimer implements YTimedObject {
 
             
     public void handleTimerExpiry() {
+        unpersistThis();                                 // unpersist this timer
         YEngine engine = YEngine.getInstance();
         YWorkItem item = engine.getWorkItem(_ownerID) ;
         if (item != null) {
@@ -148,13 +148,12 @@ public class YWorkItemTimer implements YTimedObject {
                 // handle exc.
             }
         }
-        persistThis(false) ;                                 // unpersist this timer
     }
 
 
     // unpersist this timer when the workitem is cancelled
     public void cancel() {
-        persistThis(false) ;
+        unpersistThis() ;
     }
 
 }

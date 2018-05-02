@@ -30,6 +30,7 @@ public class EngineInstance implements ConfigChangeListener, Pollable {
     private int _port;
     private final LoadReader _loadReader;
     private BusynessRule _busyRule;
+    private RequestCollator _reqCollator;
     private String _sessionHandle;
     private boolean _active;
     private boolean _initialized;
@@ -49,7 +50,8 @@ public class EngineInstance implements ConfigChangeListener, Pollable {
         _authenticator = false;
         _runningCases = new ArrayList<String>();
         _busyRule = getBusyRule();
-        PollingService.add(new RequestCollator(host, port));
+        _reqCollator = new RequestCollator(host, port);
+        PollingService.add(_reqCollator);
         PollingService.add(this);
         Config.addChangeListener(this);
         pingUntilActive();
@@ -66,17 +68,18 @@ public class EngineInstance implements ConfigChangeListener, Pollable {
 
     @Override
     public void scheduledEvent() {
-        if (_busyRule != null) {
-            try {
-                _busyRule.add(_loadReader.getBusyness(Config.isWriteLog()));
+        try {
+
+            // this will write values to log for all options (if configured)
+            double busyness = _loadReader.getBusyness(Config.isWriteLog());
+            if (_busyRule != null) {
+                _busyRule.add(busyness);
             }
-            catch (Exception e) {
-                LogManager.getLogger(this.getClass()).error(
-                        e.getMessage() + " for engine {}:{}",
-                        _host, _port
-                );
-                // later
-            }
+        }
+        catch (Exception e) {
+            LogManager.getLogger(this.getClass()).error(
+                    e.getMessage() + " for engine {}:{}", _host, _port);
+            // later
         }
     }
 
@@ -162,7 +165,14 @@ public class EngineInstance implements ConfigChangeListener, Pollable {
 
 
     public double getBusyness(boolean verbose) throws IOException, JSONException {
-        return _busyRule != null ? _busyRule.get() : _loadReader.getBusyness(verbose);
+        double casesLaunched = _reqCollator.getResponsesPerSec("launchCase");
+        double itemsStarted = _reqCollator.getResponsesPerSec("checkout");
+        double itemsCompleted = _reqCollator.getResponsesPerSec("checkin");
+        double busyness = (casesLaunched * 3) + (itemsStarted * 2) + itemsCompleted;
+        System.out.println(String.format("** %s: %.3f, %.3f, %.3f, %.3f", _port,
+                casesLaunched, itemsStarted, itemsCompleted, busyness));
+        return busyness;
+    //    return _busyRule != null ? _busyRule.get() : _loadReader.getBusyness(verbose);
     }
 
 

@@ -32,7 +32,7 @@
     <filter token="SCHEDULING_LOGGING_LEVEL" value="${scheduling.logging.level}"/>
     <filter token="PROCLET_LOGGING_LEVEL" value="${proclet.logging.level}"/>
 
-    <property name="app.version" value="4.1"/>
+    <property name="app.version" value="4.2"/>
     <property name="developer.name" value="Michael Adams, Lachlan Aldred, Andrew Hastie,
                                            Mike Fowler et al."/>
 
@@ -313,7 +313,7 @@
     <!-- mul -->
     <property name="servlet" value="servlet-api.jar"/>
     <!-- mul -->
-    <property name="simplemail" value="simple-java-mail-v1.8.jar"/>
+    <property name="simplemail" value="simple-java-mail-4.4.5.jar"/>
     <!-- sml -->
     <property name="slf4j" value="slf4j-api-1.7.12.jar"/>
     <!-- hbn -->
@@ -445,7 +445,7 @@
               value="${saxon} ${saxondom} ${saxonapi} ${saxonjdom}"/>
 
     <property name="simplemail.libs"
-              value="${mailapi} ${simplemail} ${smtp}"/>
+              value="${mailapi} ${simplemail} ${smtp} ${slf4j}"/>
 
     <property name="scheduling.libs"
               value="${json} ${commonsDbcp} ${commonsPool} ${jaxen} ${ucp}
@@ -792,7 +792,7 @@
             <link offline="false" href="http://www.jdom.org/docs/apidocs/"/>
             <link offline="false" href="http://www.bouncycastle.org/docs/mdocs1.5/"/>
             <link offline="false"
-                  href="http://simple-java-mail.googlecode.com/svn/trunk/javadoc/users/"/>
+                  href="http://www.javadoc.io/doc/org.simplejavamail/simple-java-mail/4.4.5/"/>
 
             <!-- referenced class paths -->
             <classpath refid="cp.standard"/>
@@ -2195,7 +2195,7 @@
              <fileset dir="${lib.dir}" includes="${webapp_testService.libs}"/>
          </copy>
          <copy todir="${temp.dir}/balancer/WEB-INF/lib"
-               file="${output.dir}/yawl-lib-4.1.jar"/>
+               file="${output.dir}/yawl-lib-4.2.jar"/>
      </target>
 
     <!--
