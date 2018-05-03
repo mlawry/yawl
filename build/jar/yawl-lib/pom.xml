@@ -4,7 +4,7 @@
     <groupId>org.yawlfoundation.yawl</groupId>
     <artifactId>yawl-lib</artifactId>
     <packaging>jar</packaging>
-    <version>4.1</version>
+    <version>4.2</version>
     <name>yawl-lib</name>
     <url>https://github.com/mlawry/yawl</url>
     <properties>
@@ -42,11 +42,6 @@
             <version>2.6</version>
         </dependency>
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mailapi</artifactId>
-            <version>1.4.3</version>
-        </dependency>
-        <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
             <version>1.1.6</version>
@@ -77,9 +72,9 @@
             <version>1.46</version>
         </dependency>
         <dependency>
-            <groupId>org.codemonkey.simplejavamail</groupId>
+            <groupId>org.simplejavamail</groupId>
             <artifactId>simple-java-mail</artifactId>
-            <version>1.9.1</version>
+            <version>4.4.5</version>
         </dependency>
         <dependency>
             <groupId>org.hawkular.datamining</groupId>
